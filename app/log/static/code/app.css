@@ -1,0 +1,104 @@
+.codehilite {
+  margin: 2em 0 2.8em; }
+  .codehilite table, .codehilite tbody {
+    display: block;
+    width: 100%; }
+  .codehilite td {
+    border: 1px solid #dee; }
+  .codehilite tr {
+    display: flex;
+    width: 100%; }
+  .codehilite .code {
+    flex: 1 0 0px;
+    margin-left: -1px;
+    display: block;
+    max-width: calc(100% - 2em); }
+
+pre {
+  padding: 10px;
+  margin: 0;
+  line-height: 23px;
+  white-space: pre;
+  overflow-x: auto;
+  word-break: inherit;
+  word-wrap: inherit; }
+
+.codehilite .gl {
+  background: #fafafa;
+  border-right: 1px solid #ddd;
+  color: #ccc;
+  user-select: none;
+  padding: 0 5px;
+  overflow: hidden; }
+
+p code, li code, td code {
+  color: #666;
+  background: #fafafa;
+  padding: 3px 6px;
+  border-radius: 8px;
+  border: 1px dotted #ccc;
+  margin: 0 4px;
+  font-size: 90%;
+  word-wrap: break-word; }
+
+a code {
+  color: inherit;
+  text-decoration: underline;
+  margin: 0 -1px;
+  padding: 3px 10px; }
+
+.ArgumentSpec {
+  background: #ffffef;
+  padding: 1em 2em;
+  list-style-type: none;
+  line-height: 190%;
+  border-radius: 8px;
+  border: solid 1px #eee;
+  margin: 2.5em 0 1.5em; }
+  .ArgumentSpec li strong {
+    padding-left: 0; }
+  .ArgumentSpec li code {
+    background: rgba(255, 255, 255, 0.5); }
+
+pre {
+  counter-reset: line-numbering;
+  border: solid 1px #d9d9d9;
+  border-radius: 0;
+  background: #fff;
+  padding: 0;
+  line-height: 23px;
+  margin-bottom: 30px;
+  white-space: pre;
+  overflow-x: auto;
+  word-break: inherit;
+  word-wrap: inherit; }
+
+pre a::before {
+  content: counter(line-numbering);
+  counter-increment: line-numbering;
+  padding-right: 1em;
+  /* space after numbers */
+  width: 25px;
+  text-align: right;
+  opacity: 0.7;
+  display: inline-block;
+  color: #aaa;
+  background: #eee;
+  margin-right: 16px;
+  padding: 2px 10px;
+  font-size: 13px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none; }
+
+pre a:first-of-type::before {
+  padding-top: 10px; }
+
+pre a:last-of-type::before {
+  padding-bottom: 10px; }
+
+pre a:only-of-type::before {
+  padding: 10px; }

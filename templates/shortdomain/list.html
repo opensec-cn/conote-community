@@ -1,0 +1,57 @@
+{% extends 'framework.html' %}
+
+{% block subject %}短域名{% endblock %}
+
+{% block content %}
+<div class="panel panel-default">
+ <div class="panel-heading">操作</div>
+ <div class="panel-body">
+    <a type="button" class="btn btn-labeled btn-info" href="{% url 'log:shortdomain-create' %}">
+       <span class="btn-label"><i class="icon-plus"></i>
+       </span>增加短域名</a>
+ </div>
+</div>
+
+<div class="panel panel-default">
+ <div class="panel-heading">我的短域名</div>
+ <div class="panel-body">
+    <div class="table-responsive">
+       <table class="table table-striped">
+          <thead>
+             <tr>
+                <th>时间</th>
+                <th>域名</th>
+                <th class="table-path">目标地址</th>
+                <th>点击量</th>
+                <th>管理</th>
+             </tr>
+          </thead>
+          <tbody>
+            {% for object in object_list %}
+             <tr>
+                <td>{{ object.created_time | date:"Y-m-d H:i:s" }}</td>
+                <td><a href="{{ object.get_absolute_url }}" target="_blank">{{ object.get_absolute_url }}</a></td>
+                <td class="table-path">{{ object.target }}</td>
+                <td>{{ object.click }}</td>
+                <td>
+                    <a type="button" class="mb-sm btn-xs btn btn-primary btn-outline"
+                       href="{% url 'log:shortdomain-update' pk=object.pk %}">编辑</a>
+                    <button type="button" class="mb-sm btn-xs btn btn-danger btn-outline confirm"
+                            onclick="post_submit('{% url 'log:shortdomain-delete' pk=object.pk %}')">删除</button>
+                </td>
+             </tr>
+            {% endfor %}
+          </tbody>
+       </table>
+    </div>
+ </div>
+ {% if is_paginated %}
+ <div class="panel-footer">
+   <div class="pull-right">
+    {% include 'pure_pagination/pagination-bootstrap.html' %}
+   </div>
+   <div class="clearfix"></div>
+</div>
+ {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'framework.html' %}
+{% load bootstrap3 %}
+{% load static %}
+
+{% block subject %}XSS收信<small>项目列表</small>{% endblock %}
+
+{% block content %}
+<div class="table-grid table-grid-desktop">
+   <div class="col col-xxl">
+      <div class="pr">
+         <div class="clearfix mb">
+            <button class="btn btn-sm btn-default mb-toggle-button pull-right dropdown-toggle" type="button" data-toggle="collapse" data-target=".mb-boxes">
+               <em class="fa fa-bars fa-fw fa-lg"></em>
+            </button>
+            <a class="btn btn-purple btn-sm mb-compose-button" href="{% url 'xss:project-create' %}">
+               <em class="fa fa-pencil"></em>
+               <span>创建项目</span>
+            </a>
+         </div>
+         <!-- START mailbox list-->
+         <div class="mb-boxes collapse">
+            <div class="panel panel-default">
+               <div class="panel-body">
+                  <ul class="nav nav-pills nav-stacked">
+                     <li class="p">
+                        <small class="text-muted">项目列表</small>
+                     </li>
+                     {% for object in object_list %}
+                     <li class="{% if form.instance and form.instance.pk == object.pk %}active{% endif %}">
+                        <a href="{% url 'xss:project-detail' pk=object.pk %}">
+                           <span class="label label-green pull-right">{{ object.victims.count }}</span>
+                           <em class="fa fa-fw fa-lg fa-inbox"></em>
+                           <span>{{ object.name }}</span>
+                        </a>
+                     </li>
+                     {% endfor %}
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <!-- END mailbox list-->
+      </div>
+   </div>
+   <div class="col">
+      <!-- START action buttons-->
+      <div class="clearfix mb">
+         <div class="btn-group pull-left">
+            <button class="btn btn-default btn-sm" type="button">
+               <em class="fa fa-mail-reply text-gray-dark"></em>
+            </button>
+            <button class="btn btn-default btn-sm" type="button">
+               <em class="fa fa-mail-reply-all text-gray-dark"></em>
+            </button>
+            <button class="btn btn-default btn-sm" type="button">
+               <em class="fa fa-mail-forward text-gray-dark"></em>
+            </button>
+         </div>
+         <div class="btn-group pull-right">
+            {% if form.instance.pk %}
+            <button class="btn btn-danger btn-sm" type="button" onclick="post_submit('{% url 'xss:project-delete' pk=form.instance.pk %}')">删除</button>
+            {% endif %}
+            <button class="btn-sm btn btn-purple" type="button" id="project-submit">提交</button>
+         </div>
+      </div>
+      <div class="panel panel-default">
+         <div class="panel-body">
+             <form method="post" enctype="multipart/form-data" id="project-form">
+                 {% bootstrap_form form %}
+                 {% csrf_token %}
+             </form>
+         </div>
+      </div>
+   </div>
+</div>
+<div id="btn-panel" class="btn-panel">
+    <button class="btn btn-default btn-sm" type="button" id="minify">压缩</button>
+    <button class="btn btn-default btn-sm" type="button" id="beautify">美化</button>
+
+    {% if form.instance.pk %}
+    <button class="btn btn-default btn-sm clip-btn" type="button" data-clipboard-text="{{ form.instance.get_absolute_url }}">复制JS地址</button>
+    {% endif %}
+
+    <div class="pull-right" style="width: 30%">
+        <select id="payload-template" class="chosen-select input-md form-control pull-right"
+                data-placeholder="插入Payload模板...">
+        <option value=""></option>
+        <optgroup label="插入一个预置XSS模块...">
+         {% for payload in template_payload %}
+           <option value="{{ payload.data }}">{{ payload }}</option>
+         {% endfor %}
+        </optgroup>
+      </select>
+    </div>
+</div>
+{% endblock %}
+
+{% block addstyle %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.13.1/min/vs/editor/editor.main.css" integrity="sha256-LsEYYWoTcOfDc0LahYNMoYGUAMKPg6v8u7HvULUfdwE=" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'vendor/chosen/chosen.min.css' %}">
+<style type="text/css">
+.btn-panel { margin-bottom: 10px; display: none; }
+#editor {
+    border: 1px solid lightgray;
+    margin: auto;
+    height: 400px;
+    width: 100%;
+}
+.pager {
+    margin: 0;
+}
+</style>
+{% endblock %}
+
+{% block addscript %}
+<script src="{% static 'vendor/chosen/chosen.jquery.min.js' %}"></script>
+<script src="{% static 'js/xss/bundle.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.13.1/min/vs/loader.js" integrity="sha256-BRLZ7T5bs9rvlKpcFqbD4u4m/+2d4A0UNP/kagJ7Frk=" crossorigin="anonymous"></script>
+<script src="{% static 'js/xss/xss.min.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'framework.html' %}
+
+{% block subject %}{{ title | default:'出了一个问题！' }}{% endblock %}
+
+{% block content %}
+ <div class="panel panel-default">
+    <div class="panel-body">
+        <div class="text-center mb-xl">
+            <div class="mb-lg">
+               <em class="fa fa-wrench fa-5x text-muted"></em>
+            </div>
+            <div class="text-lg mb-lg">Error</div>
+            <p class="lead m0">{{ errors | default:'出了一个问题！' }}</p>
+         </div>
+         <ul class="list-inline text-center text-sm mb-xl">
+            <li><a href="{% url 'log:index' %}" class="text-muted">首页</a>
+            </li>
+         </ul>
+    </div>
+ </div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{
+    admin off
+    auto_https disable_redirects
+}
+
+http://note.leavesongs.com {
+    redir https://note.leavesongs.com{uri} permanent
+}
+
+https://note.leavesongs.com {
+    @static path /static/* /media/*
+
+    handle @static {
+        root * /data/conote
+        file_server
+    }
+
+    handle /ws/* {
+        reverse_proxy localhost:8078
+    }
+
+    handle {
+        reverse_proxy localhost:8076
+    }
+}
+
+:80 {
+    reverse_proxy * localhost:8076
+}
+
+http://mhz.pw https://mhz.pw {
+    reverse_proxy * localhost:8076
+
+    handle /game/* {
+        redir http://t.mhz.pw{uri} permanent
+    }
+}
+
+https://*.o53.xyz {
+  reverse_proxy * localhost:8076
+  tls /etc/ssl/conote/full_chain.pem /etc/ssl/conote/private.key
+}

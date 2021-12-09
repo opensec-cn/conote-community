@@ -1,0 +1,88 @@
+{% extends 'framework.html' %}
+{% load static %}
+
+{% block subject %}
+    自定义DNS服务器
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid row">
+<form role="form" class="col-sm-12 col-md-10 col-lg-8" method="post">
+{% csrf_token %}
+
+{% if messages %}
+{% for message in messages %}
+<div role="alert" class="alert alert-{{ message.tags }}">
+{{ message }}
+</div>
+{% endfor %}
+{% endif %}
+<div class="panel panel-primary">
+    <div class="panel-heading">说明</div>
+    <div class="panel-body">
+        <p>请求如下域名，依次返回你设置的IP地址（每两个域名间请求时间不大于5秒），可用于测试DNS Rebinding漏洞。</p>
+    </div>
+    <div class="panel-footer">
+        dig @8.8.8.8 <code>{{ request.user.get_dns_record }}</code>
+    </div>
+</div>
+<ul class="list-group sortable" id="ip_list">
+</ul>
+<ul class="list-group">
+<li class="list-group-item">
+    <button type="submit" class="btn btn-labeled btn-success">
+       <span class="btn-label"><i class="fa fa-check"></i>
+    </span>修改</button>
+    <button type="button" class="btn btn-labeled btn-info" onclick="return addNode()">
+      <span class="btn-label"><i class="icon-plus"></i>
+    </span>增加</button>
+</li>
+</ul>
+</form>
+</div>
+{% endblock %}
+
+{% block addscript %}
+<script>
+var template = '<li class="list-group-item" id="node-#i#">\
+    <div class="form-group">\
+       <label class="move-label">返回IP地址 <a href="javascript:removeNode(\'#i#\')" class="text-muted">删除</a></label>\
+          <input type="text" class="form-control" value="#ip#" name="ip" required>\
+    </div>\
+</li>';
+var node_sort = 0;
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function addNode() {
+    $("#ip_list").append(template.replace(/\#i\#/g, String(node_sort+1)).replace(/\#ip\#/g, ''));
+    node_sort++;
+}
+function removeNode(i) {
+    $("#node-"+i).remove();
+}
+(function(window, document, $, undefined) {
+    $(function() {
+        var list = JSON.parse('{{ object.get_ip_display | escapejs }}');
+        if(list.length > 0) {
+            list.forEach(function (ip, i) {
+                $("#ip_list").append(template.replace(/\#i\#/g, String(node_sort+1)).replace(/\#ip\#/g, htmlEntities(ip)));
+                node_sort++;
+            });
+        } else {
+            $("#ip_list").append(template.replace(/\#i\#/g, String(node_sort+1)).replace(/\#ip\#/g, ''));
+            node_sort++;
+        }
+    });
+})(window, document, window.jQuery);
+</script>
+{% endblock %}
+
+{% block addstyle %}
+<style>
+.move-label {
+  height: 35px;
+    line-height: 35px;
+}
+</style>
+{% endblock %}

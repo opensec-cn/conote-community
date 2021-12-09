@@ -1,0 +1,144 @@
+.post {
+    padding-top: 1em;
+}
+
+.post-block {
+    .post-title {
+        margin: 0.65em 0;
+        color: #2c3e50;
+        font-size: 1.5em;
+    }
+
+    .post-info {
+        color: #7f8c8d;
+        margin: 1.2em 0;
+        span {
+            margin-left: 0.5rem;
+        }
+        a.post-from {
+            margin-left: 0.5rem;
+            padding: 3px 6px;
+            border-radius: 5px;
+            font-size: 12px;
+            color: white;
+            background-color: #E36B6B;
+        }
+    }
+}
+
+.post-content {
+    h2, h3, h4, h5, h6 {
+        position: relative;
+        margin: 1em 0;
+        a:before {
+            content: "#";
+            color: #42b983;
+            position: absolute;
+            left: -0.7em;
+            top: -4px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+    }
+    h4, h5, h6 {
+        a:before {
+            content: "";
+        }
+    }
+
+    h2, h3 {
+        font-size: 22px;
+    }
+
+    h4, h5, h6 {
+        font-size: 18px;
+    }
+    a {
+        color: #42b983;
+        word-break: break-all;
+    }
+    blockquote {
+        margin: 2em 0;
+        padding-left: 20px;
+        border-left: 4px solid #42b983;
+    }
+    img {
+        display: block;
+        max-width: 100%;
+        margin: 1em auto;
+    }
+    & > table,
+    & > figure.highlight {
+        box-shadow: 0 1px 2px rgba(0,0,0,0.125);
+    }
+    .tip {
+        position: relative;
+        margin: 2em 0;
+        padding: 12px 24px 12px 30px;
+        border-left: 4px solid #f66;
+        border-top-right-radius: 2px;
+        border-bottom-right-radius: 2px;
+        background-color: #f8f8f8;
+        br {
+            display: none;
+        }
+    }
+    .tip:before {
+        position: absolute;
+        top: 14px;
+        left: -12px;
+        content: "!";
+        width: 20px;
+        height: 20px;
+        border-radius: 100%;
+        color: #fff;
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: bold;
+        text-align: center;
+        background-color: #f66;
+        font-family: 'Dosis', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif;
+    }
+}
+
+#mask {
+    position: fixed;
+    overflow: scroll;
+    width: 100%;
+    height: 100%;
+    padding: 1em 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    #mask-image {
+        max-width: 95%;
+    }
+}
+
+%code-base {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #ccc;
+    text-align: right;
+    font-size: 0.75em;
+    padding: 5px 10px 0;
+    line-height: 15px;
+    height: 15px;
+    font-weight: 600;
+}
+
+@mixin code-signs($keys) {
+    @each $key in $keys {
+        .highlight.#{$key} .code:after {
+            content: to-upper-case($key);
+            @extend %code-base;
+        }
+    }
+}
+
+$signs: ("html", "js", "bash", "css", "scss","diff", "java", "xml", "python", "json", "swift", "ruby", "perl", "php", "c", "java", "cpp", "ts");
+@include code-signs($signs);
+
+.highlight.cpp .code:after {
+    content: 'C++';
+}

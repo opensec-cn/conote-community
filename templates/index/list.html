@@ -1,0 +1,113 @@
+{% extends 'framework.html' %}
+
+{% block subject %}主页{% endblock %}
+
+{% block content %}
+<div class="panel panel-default">
+ <div class="panel-heading">基本信息</div>
+ <div class="panel-body">
+   <table class="table table-striped">
+          <thead>
+             <tr>
+                <th>域名</th>
+                <th>API Key</th>
+                <th>API文档</th>
+             </tr>
+          </thead>
+          <tbody>
+            <tr>
+                <td>
+                    <code>{{ request.user.get_user_domain }}</code>
+                </td>
+                <td>{{ request.user.apikey }}</td>
+                <td>尚无API</td>
+            </tr>
+
+          </tbody>
+   </table>
+ </div>
+ <div class="panel-footer">
+    <button class="btn btn-info btn-xs btn-outline btn-square btn-copy" type="button" data-clipboard-text="{{ request.user.get_user_domain }}">复制域名</button>
+    <a class="btn btn-info btn-xs btn-outline btn-square" href="{% url 'auth:option' %}">全局设置</a>
+    <button type="button" class="btn btn-warning btn-xs btn-square" onclick="return post_submit('{% url 'log:refresh-apikey' %}')">刷新API Key</button>
+    <button type="button" class="btn btn-danger btn-xs btn-square" onclick="return post_submit('{% url 'log:log-delete' %}', {query:'dns'})">清空DNS记录</button>
+    <button type="button" class="btn btn-danger btn-xs btn-square" onclick="return post_submit('{% url 'log:log-delete' %}', {query:'web'})">清空Web记录</button>
+    <button type="button" class="btn btn-danger btn-xs btn-square" onclick="return post_submit('{% url 'log:log-delete' %}', {query:'all'})">清空所有记录</button>
+ </div>
+</div>
+<div class="panel panel-default">
+ <div class="panel-heading">Web日志</div>
+ <div class="panel-body">
+       <table class="table table-striped">
+          <thead>
+             <tr>
+                <th>时间</th>
+                <th>方法</th>
+                <th>Host</th>
+                <th class="hidden-xs hidden-sm table-path">Path</th>
+                <th>IP地址</th>
+                <th>管理</th>
+             </tr>
+          </thead>
+          <tbody>
+            {% for object in weblog_list %}
+             <tr>
+                <td>{{ object.created_time | date:"Y-m-d H:i:s" }}</td>
+                <td>{{ object.method }}</td>
+                <td>{{ object.hostname }}</td>
+                <td class="hidden-xs hidden-sm table-path">{{ object.path }}</td>
+                <td><span class="label label-info">{{ object.ip_addr }}</span></td>
+                <td>
+                    <a class="btn-xs btn btn-primary btn-outline"
+                       href="{% url 'log:weblog-detail' pk=object.pk %}">查看</a>
+                    <a class="btn-xs btn btn-danger btn-outline"
+                       href="javascript:post_submit('{% url 'log:weblog-delete' pk=object.pk %}')">刪除</a>
+                </td>
+             </tr>
+            {% endfor %}
+          </tbody>
+       </table>
+ </div>
+</div>
+
+<div class="panel panel-default">
+ <div class="panel-heading">DNS日志</div>
+ <div class="panel-body">
+    <div class="table-responsive">
+       <table class="table table-striped">
+          <thead>
+             <tr>
+                <th width="10%">时间</th>
+                <th>域名</th>
+                <th width="10%">类型</th>
+                <th width="15%">管理</th>
+             </tr>
+          </thead>
+          <tbody>
+            {% for object in dnslog_list %}
+             <tr>
+                <td>{{ object.created_time | date:"Y-m-d H:i:s" }}</td>
+                <td>{{ object.hostname }}</td>
+                <td>{{ object.dns_type }}</td>
+                <td>
+                    <a type="button" class="btn-xs btn btn-primary btn-outline">查看</a>
+                </td>
+             </tr>
+            {% endfor %}
+          </tbody>
+       </table>
+    </div>
+ </div>
+</div>
+{% endblock %}
+
+{% block addscript %}
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.1/dist/clipboard.min.js" integrity="sha256-hIvIxeqhGZF+VVeM55k0mJvWpQ6gTkWk3Emc+NmowYA=" crossorigin="anonymous"></script>
+<script>
+(function(window, document, $, undefined){
+  $(function(){
+      new ClipboardJS('.btn-copy');
+  });
+})(window, document, window.jQuery);
+</script>
+{% endblock %}

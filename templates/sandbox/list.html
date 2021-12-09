@@ -1,0 +1,105 @@
+{% extends 'framework.html' %}
+
+{% block subject %}我的沙盒{% endblock %}
+
+{% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-12">
+        <div class="mb-boxes collapse">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <ul class="nav nav-pills nav-stacked">
+                <li class="p">
+                  <small class="text-muted">沙盒类型</small>
+                </li>
+                <li class="{% if not request.GET.type %}active{% endif %}">
+                  <a href="{% url 'sandbox:sandbox-list' %}">
+                    <span class="label label-green pull-right">{{ statistics.all | default:'0' }}</span>
+                    <span>全部沙盒</span>
+                  </a>
+                </li>
+                <li class="{% if request.GET.type == 'php-5.6' %}active{% endif %}">
+                  <a href="{% url 'sandbox:sandbox-list' %}?type=php-5.6">
+                    <span class="label label-green pull-right">{{ statistics.php56 | default:'0' }}</span>
+                    <span>PHP 5.6</span>
+                  </a>
+                </li>
+                <li class="{% if request.GET.type == 'php-7.2' %}active{% endif %}">
+                  <a href="{% url 'sandbox:sandbox-list' %}?type=php-7.2">
+                    <span class="label label-green pull-right">{{ statistics.php72 | default:'0' }}</span>
+                    <span>PHP 7.2</span>
+                  </a>
+                </li>
+                <li class="p">
+                  <small class="text-muted">操作</small>
+                </li>
+                <li>
+                  <a href="{% url 'sandbox:sandbox-create' %}">
+                    <em class="fa fa-fw fa-lg fa-edit"></em>
+                    <span>增加沙盒</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xl-4 col-lg-5 col-md-8 col-sm-12">
+        <div class="panel panel-default">
+          <div class="panel-body table-responsive">
+            <table class="table table-hover">
+              <tbody>
+              {% for object in object_list %}
+                <tr class="pointer" data-code="{{ object.code }}">
+                  <td class="b0">
+                    <p class="h4 mt0 text-primary">
+                      <span class="label bg-gray-lighter ph-lg mr text-sm visible-lg-inline">
+                        <span class="text-muted">{{ object.type }}</span>
+                       </span>
+                      <span class="align-middle">{{ object.title }}</span>
+                    </p>
+                    <small>{{ object.created_time | timesince }}</small>
+                    <div class="pull-right">
+                      <a href="{{ object.get_absolute_url }}" class="btn btn-xs btn-success btn-preview" target="_blank">直接访问</a>
+                      <a href="{% url 'sandbox:sandbox-update' pk=object.pk %}" class="btn btn-xs btn-primary">修改</a>
+                      <a href="javascript:post_submit('{% url 'sandbox:sandbox-delete' pk=object.pk %}')" class="btn btn-xs btn-danger">删除</a>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% if is_paginated %}
+            <div class="panel-footer">
+              {% include 'pure_pagination/pagination-bootstrap.html' %}
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-4 col-md-12 col-sm-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <p>沙箱是一个全封闭的Web运行环境，除了命令执行等少量函数无法使用，其他功能不做限制。</p>
+          </div>
+          <div class="panel-body p0">
+            <pre class="b0 m0" style="padding: 15px"><code id="preview">&lt;php //...</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block addscript %}
+  <script>
+      jQuery(function ($) {
+          $('tr.pointer').on('click', function (e) {
+              if(e.target.tagName !== 'A') {
+                  $("#preview").text($(this).data('code'))
+              }
+          })
+      })
+  </script>
+{% endblock %}

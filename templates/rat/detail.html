@@ -1,0 +1,125 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block main %}
+
+<div class="content-wrapper">
+
+  <div id="terminal" class="terminal">
+    <div class="shell-group">
+      <span class="shell-addon">{{ object.address }} #</span>
+      <input type="text" class="command" id="command" autofocus="autofocus" disabled>
+    </div>
+    <div class="output" id="output"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block addstyle %}
+<style>
+@import url('https://fonts.googleapis.com/css?family=Inconsolata:400,700');
+input.command {
+  width: 100%;
+  padding: 10px 20px 10px 0;
+  background-color: #000000;
+  color: #bbb;
+  caret-color: #bbb;
+  font-family: 'Inconsolata', monospace;
+  font-weight: 600;
+  font-size: 16px;
+  border: 0;
+}
+.shell-addon {
+  padding: 10px 12px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1;
+  color: #bbb;
+  background-color: #000;
+  border: 0;
+  text-align: center;
+  width: 1%;
+  white-space: nowrap;
+  vertical-align: middle;
+  display: table-cell;
+  font-family: 'Inconsolata', monospace;
+}
+.shell-group {
+    position: relative;
+    display: table;
+    border-collapse: separate;
+}
+.output {
+  width: 100%;
+  background-color: #000000;
+  color: #bbb;
+  height: 700px;
+  font-family: 'Inconsolata', monospace;
+  padding: 0 15px 15px 15px;
+  font-size: 16px;
+  font-weight: 600;
+  white-space: pre-line;
+  line-height: 32px;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+}
+.output::-webkit-scrollbar { width: 0 !important }
+</style>
+{% endblock %}
+
+{% block addscript %}
+<script>
+var command_history = []
+jQuery(function($, undefined) {
+    var xsrf = $("meta[name=csrfmiddlewaretoken]").attr('content');
+    var output = ''
+    var history_pos = null
+    var serid = '{{ object.serid | escapejs }}'
+    var ws_scheme = window.location.protocol === "https:" ? "wss" : "ws";
+    var rat = new WebSocket(
+        ws_scheme + '://' + window.location.host +
+        '/ws/rat/' + serid + '/');
+
+    function execute(command) {
+        if (command !== '') {
+          rat.send(JSON.stringify({
+              'command': command
+          }))
+        }
+    }
+    function clearCaret() {
+        $('#command').val('')
+        history_pos = null
+    }
+    $("#command").on('keyup', function (e) {
+      if(e.which === 13) {
+          execute(e.target.value)
+          command_history.push(e.target.value)
+          clearCaret()
+      } else if (e.which === 38) {
+          if (typeof history_pos !== 'number') {
+              history_pos = command_history.length - 1
+          } else if (history_pos > 0) {
+              history_pos--
+          }
+          e.target.value = command_history[history_pos]
+      } else if (e.which === 40) {
+          if (typeof history_pos === 'number' && history_pos < command_history.length - 1) {
+              e.target.value = command_history[++history_pos]
+          }
+      }
+    })
+
+    rat.onmessage = function (e) {
+        var data = JSON.parse(e.data)
+        $('#output').text(data.output).scrollTop($('#output').prop('scrollHeight'))
+        $("#command").prop('disabled', false).focus()
+    }
+    rat.onclose = function(e) {
+        console.error('Rat socket closed unexpectedly');
+        $("#command").prop('disabled', true)
+    }
+})
+</script>
+{% endblock %}

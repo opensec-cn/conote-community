@@ -1,0 +1,69 @@
+{% extends 'framework.html' %}
+{% load template_helper %}
+
+{% block subject %}Web记录详情{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12 col-lg-8">
+      <div class="panel b0 table-responsive">
+         <table class="table bb" style="table-layout: fixed; width: 100%">
+            <tbody>
+               <tr>
+                   <td width="20%" class="hidden-sm hidden-xs">
+                       <strong>METHOD</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ object.method }}</td>
+               </tr>
+               <tr>
+                   <td width="20%" class="hidden-sm hidden-xs">
+                       <strong>PATH</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ object.path }}</td>
+               </tr>
+                {% for k, v in object.headers.items %}
+               <tr>
+                  <td width="20%" class="hidden-sm hidden-xs">
+                     <strong>{{ k }}</strong>
+                  </td>
+                  <td width="80%" class="maybe-long">{{ v }}</td>
+               </tr>
+               {% endfor %}
+            </tbody>
+         </table>
+         {% if object.body %}
+         <div class="panel-body p0">
+            <pre class="b0 m0"><code>{{ object.body | remove_unobservable }}</code></pre>
+         </div>
+         {% endif %}
+      </div>
+  </div>
+  <div class="col-md-12 col-lg-4">
+      <div class="panel">
+      <div class="panel-body bb">
+        <div class="clearfix">
+           <div class="pull-left">
+              <form method="post">
+                  {% if object.body %}
+                  <button type="submit" class="btn btn-default btn-oval">
+                     <em class="fa fa-download fa-fw text-muted"></em>
+                     <span>下载</span>
+                  </button>
+                  {% endif %}
+                  <button type="button" class="btn btn-default btn-oval"
+                          onclick="return post_submit('{% url 'log:weblog-delete' pk=object.pk %}')">
+                     <em class="fa fa-trash-o fa-fw text-muted"></em>
+                     <span>删除</span>
+                  </button>
+                  {% csrf_token %}
+              </form>
+           </div>
+           <div class="pull-right">
+              <a href="{{ request.session.back_url }}" class="btn btn-default btn-oval">返回</a>
+           </div>
+        </div>
+       </div>
+      </div>
+  </div>
+</div>
+{% endblock %}

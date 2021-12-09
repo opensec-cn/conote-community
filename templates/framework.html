@@ -1,0 +1,10 @@
+{% extends 'main.html' %}
+
+{% block main %}
+<div class="content-wrapper">
+  <div class="content-heading">
+     {% block subject %}Title{% endblock %}
+  </div>
+  {% block content %}{% endblock %}
+</div>
+{% endblock %}

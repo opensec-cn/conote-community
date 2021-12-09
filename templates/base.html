@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <meta name="description" content="Bootstrap Admin App + jQuery">
+   <meta name="keywords" content="app, responsive, jquery, bootstrap, dashboard, admin">
+   <title>{% block title %}CoNote{% endblock %}</title>
+   <!-- =============== VENDOR STYLES ===============-->
+   <!-- FONT AWESOME-->
+   <link rel="stylesheet" href="{% static 'vendor/fontawesome/css/font-awesome.min.css' %}">
+   <!-- SIMPLE LINE ICONS-->
+   <link rel="stylesheet" href="{% static 'vendor/simple-line-icons/css/simple-line-icons.css' %}">
+   <!-- ANIMATE.CSS-->
+   <link rel="stylesheet" href="{% static 'vendor/animate.css/animate.min.css' %}">
+   <link rel="stylesheet" href="{% static 'vendor/sweetalert/dist/sweetalert.css' %}">
+   <!-- =============== PAGE VENDOR STYLES ===============-->
+   <!-- =============== BOOTSTRAP STYLES ===============-->
+   <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" id="bscss">
+   <!-- =============== APP STYLES ===============-->
+   <link rel="stylesheet" href="{% static 'css/app.css' %}" id="maincss">
+    <meta name="csrfmiddlewaretoken" content="{{ csrf_token }}">
+   {% block addstyle %}{% endblock %}
+</head>
+
+<body class="aside-float">
+   {% block body %}{% endblock %}
+   <!-- =============== VENDOR SCRIPTS ===============-->
+   <!-- MODERNIZR-->
+   <script src="{% static 'vendor/modernizr/modernizr.custom.js' %}"></script>
+   <!-- JQUERY-->
+   <script src="{% static 'vendor/jquery/dist/jquery.js' %}"></script>
+   <!-- BOOTSTRAP-->
+   <script src="{% static 'vendor/bootstrap/dist/js/bootstrap.js' %}"></script>
+   <!-- STORAGE API-->
+   <script src="{% static 'vendor/jQuery-Storage-API/jquery.storageapi.js' %}"></script>
+   <!-- JQUERY EASING-->
+   <script src="{% static 'vendor/jquery.easing/js/jquery.easing.js' %}"></script>
+   <!-- ANIMO-->
+   <script src="{% static 'vendor/animo.js/animo.js' %}"></script>
+   <!-- =============== PAGE VENDOR SCRIPTS ===============-->
+   <script src="{% static 'vendor/sweetalert/dist/sweetalert.min.js' %}"></script>
+   {% block addscript %}{% endblock %}
+
+   <!-- =============== APP SCRIPTS ===============-->
+   <script src="{% static 'js/app.js' %}"></script>
+</body>
+
+</html>

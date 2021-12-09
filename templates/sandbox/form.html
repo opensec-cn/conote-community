@@ -1,0 +1,31 @@
+{% extends 'framework.html' %}
+{% load bootstrap3 %}
+{% load static %}
+
+{% block subject %}我的沙盒{% endblock %}
+
+{% block content %}
+<div class="panel panel-default">
+ <div class="panel-heading">我的沙盒</div>
+ <div class="panel-body">
+    <form role="form" method="post" enctype="multipart/form-data">
+        {% bootstrap_form form %}
+
+        <button type="submit" name="sat" class="mb-sm btn btn-success">提交并返回</button>
+        <button type="submit" name="sae" class="mb-sm btn btn-success">提交并继续编辑</button>
+        <a type="button" class="mb-sm btn btn-default" href="{{ request.session.back_url }}">返回</a>
+
+       {% csrf_token %}
+    </form>
+
+ </div>
+</div>
+{% endblock %}
+
+{% block addscript %}
+<script src="{% static 'vendor/bootstrap-filestyle/src/bootstrap-filestyle.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/gh/devbridge/jQuery-Autocomplete@1.4.9/dist/jquery.autocomplete.min.js"></script>
+{% endblock %}
+
+{% block addstyle %}
+{% endblock %}

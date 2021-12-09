@@ -1,0 +1,3 @@
+<div id="editor"></div>
+<input type="hidden" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}
+    value="{{ widget.value | default_if_none:'' }}">

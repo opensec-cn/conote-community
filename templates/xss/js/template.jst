@@ -1,0 +1,6 @@
+{% include 'xss/js/co.js' %}
+{% if project %}window.co.api.remote = '{{ project.get_tz_url | escapejs }}';
+(function(co){
+    {{ payload | safe }}
+})(window.co)
+{% endif %}

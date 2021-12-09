@@ -1,0 +1,194 @@
+{% extends 'framework.html' %}
+{% load victim_helper %}
+
+{% block subject %}XSS记录详情{% endblock %}
+
+{% block content %}
+<div class="row sub">
+    <div class="col-xs-12">
+        {% if object.log %}
+        <a href="{% url 'log:weblog-detail' pk=object.log.pk %}" class="btn btn-labeled btn-info">
+        <span class="btn-label"><i class="icon-frame"></i>
+        </span>原始请求</a>
+        {% endif %}
+
+        <a href="{{ request.session.back_url }}" class="btn btn-labeled btn-info pull-right">
+        返回<span class="btn-label btn-label-right"><i class="icon-action-undo"></i>
+        </span></a>
+        <a href="javascript:post_submit('{% url 'xss:victim-delete' pk=object.pk %}')" class="btn btn-labeled btn-danger pull-right">
+        删除<span class="btn-label btn-label-right"><i class="fa fa-trash"></i>
+        </span></a>
+    </div>
+</div>
+<div class="row">
+  <div class="col-sm-12 col-md-6">
+      <div class="panel panel-primary table-responsive">
+        <div class="panel-heading">链接</div>
+         <table class="table bb">
+            <tbody>
+                <tr>
+                   <td width="20%">
+                       <strong>URL</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ object.url }}</td>
+                </tr>
+                {% if object.data.wl %}
+                <tr>
+                   <td width="20%">
+                       <strong>{% victim_sort 'wl' %}</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ object.data.wl }}</td>
+                </tr>
+                {% endif %}
+                {% if object.data.wtl and object.data.wl and object.data.wl != object.data.wtl %}
+                <tr>
+                   <td width="20%">
+                       <strong>{% victim_sort 'wtl' %}</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ object.data.wtl }}</td>
+                </tr>
+                {% endif %}
+                {% if object.data.referer %}
+                <tr>
+                   <td width="20%">
+                       <strong>{% victim_sort 'referer' %}</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ object.data.referer }}</td>
+                </tr>
+                {% endif %}
+                {% if object.data.opener %}
+                <tr>
+                   <td width="20%">
+                       <strong>{% victim_sort 'opener' %}</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ object.data.opener }}</td>
+                </tr>
+                {% endif %}
+            </tbody>
+         </table>
+      </div>
+
+      {% if object.data.cookie %}
+      <div class="panel panel-primary table-responsive">
+        <div class="panel-heading">Cookie</div>
+         <table class="table bb">
+            <tbody>
+                <tr>
+                   <td width="20%">
+                       <strong>全部</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ object.data.cookie }}</td>
+                </tr>
+                {% for k, v in object.cookies.items %}
+                <tr>
+                   <td width="20%">
+                       <strong>{{ k }}</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ v }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+         </table>
+      </div>
+      {% endif %}
+
+      <div class="panel panel-primary table-responsive">
+        <div class="panel-heading">其他数据</div>
+         <table class="table bb">
+            <tbody>
+                {% for k, v in object.data.items %}
+                {% if k not in victim_sort %}
+                <tr>
+                   <td width="20%">
+                       <strong>{{ k }}</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ v }}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+         </table>
+      </div>
+  </div>
+  <div class="col-sm-12 col-md-6">
+      <div class="panel panel-primary table-responsive">
+        <div class="panel-heading">客户端</div>
+         <table class="table bb" >
+            <tbody>
+                {% if object.data.ua %}
+                <tr>
+                   <td width="20%">
+                       <strong>{% victim_sort 'ua' %}</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ object.data.ua }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                   <td width="20%">
+                       <strong>IP地址</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ object.ip_addr }}</td>
+                </tr>
+                <tr>
+                   <td width="20%">
+                       <strong>地理位置</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ object.location }}</td>
+                </tr>
+            </tbody>
+         </table>
+      </div>
+
+      {% if object.local_storage %}
+      <div class="panel panel-primary table-responsive">
+        <div class="panel-heading">{% victim_sort 'ls' %}</div>
+         <table class="table bb" >
+            <tbody>
+                {% for k, v in object.local_storage.items %}
+                <tr>
+                   <td width="20%">
+                       <strong>{{ k }}</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ v }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+         </table>
+      </div>
+      {% endif %}
+
+      {% if object.session_storage %}
+      <div class="panel panel-primary table-responsive">
+        <div class="panel-heading">{% victim_sort 'ss' %}</div>
+         <table class="table bb" >
+            <tbody>
+                {% for k, v in object.session_storage.items %}
+                <tr>
+                   <td width="20%">
+                       <strong>{{ k }}</strong>
+                   </td>
+                   <td width="80%" class="maybe-long">{{ v }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+         </table>
+      </div>
+      {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block addstyle %}
+<style>
+.table.bb {
+    table-layout: fixed;
+    width: 100%
+}
+.sub {
+    margin-bottom: 20px;
+}
+.btn.pull-right {
+    margin-left: 10px;
+}
+</style>
+{% endblock %}

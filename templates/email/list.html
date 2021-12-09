@@ -1,0 +1,163 @@
+{% extends 'framework.html' %}
+{% load bootstrap3 %}
+{% load static %}
+
+
+{% block subject %}域名邮箱{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-9 col-xs-12">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert">
+      {{ message }}
+    </div>
+    {% endfor %}
+
+    <div class="panel b">
+      <div class="panel-body container-fluid">
+        <div class="col-lg-4 col-md-6 col-xs-12">
+          <form method="post" action="{% url 'disposable_email:generate' %}">
+              <div class="input-group">
+                <input type="text" class="form-control" readonly value="{{ box }}">
+                <div class="input-group-btn">
+                  <button type="button" tabindex="-1" class="btn btn-default btn-copy" data-clipboard-text="{{ box }}">复制</button>
+                  <button type="submit" tabindex="-1" class="btn btn-danger">重新生成</button>
+                </div>
+              </div>
+              {% csrf_token %}
+          </form>
+        </div>
+        <div class="col-lg-4 col-md-6 col-xs-12">
+          <form method="post" action="{% url 'disposable_email:flush' %}" id="flush-mails">
+            <div class="input-group">
+              <button type="button" tabindex="-1" class="btn btn-default my-alert">清空所有邮件</button>
+            </div>
+            {% csrf_token %}
+          </form>
+        </div>
+      </div>
+      <div class="panel-footer">
+        CoNote提供一些随机生成的邮箱地址，可以用作匿名邮箱，使用完成后即可删除。匿名邮箱仅作为临时邮箱使用，域名与邮箱随时可能回收或失效。<br>
+        同时，你也可以将自己的域名绑定到CoNote，使其变成企业邮箱。
+      </div>
+    </div>
+
+    <div class="panel b">
+      <div class="panel-body">
+        <table class="table table-hover mb-mails">
+          <tbody>
+            {% for object in object_list %}
+            <tr class="pointer" onclick="location.href = '{{ object.get_absolute_url | escapejs }}'">
+              <td>
+                <div class="mb-mail-date pull-right">{{ object.created_time | timesince }}</div>
+                <div class="mb-mail-meta">
+                  <div class="pull-left">
+                    <div class="mb-mail-subject">{{ object.subject }}</div>
+                    <div class="mb-mail-from">From: {{ object.mail_from }}</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3 col-xs-12">
+    <div class="panel b ">
+      <div class="panel-heading bg-gray-lighter text-bold">
+        你的邮箱
+      </div>
+      <div class="list-group">
+        {% for box in box_list %}
+          <div href="#" class="list-group-item">
+            <span class="text-bold text-primary text-code">{{ box }}</span>
+            <a class="label label-warning pull-right" onclick="return post_submit('{% url 'email:box-delete' pk=box.pk %}')">删除</a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="panel b ">
+      <div class="panel-heading bg-gray-lighter text-bold">
+        企业邮箱
+      </div>
+      <div class="panel-body">
+        <form method="post">
+          {% bootstrap_form form %}
+          <div class="form-group pull-right">
+            <button class="btn btn-default" type="button" data-toggle="modal" data-target="#help">企业邮箱说明</button>
+            <button class="btn btn-info">绑定</button>
+          </div>
+          {% csrf_token %}
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block addscript %}
+<div class="modal fade" id="help" tabindex="-1" role="dialog" aria-labelledby="help" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+       <div class="modal-content">
+          <div class="modal-header">
+             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+             </button>
+             <h4 class="modal-title" id="myModalLabelLarge">企业邮箱说明</h4>
+          </div>
+          <div class="modal-body">
+            <p>CoNote支持用户绑定自定义域名，作为企业邮箱使用。</p>
+            <p>请将你的域名<code>MX</code>记录指向<code>{{ server_name }}</code>，然后添加自定义邮箱地址，一个域名可以添加多个邮箱，邮箱需要以域名为后缀。</p>
+            <p><img src="https://ws2.sinaimg.cn/large/400f4ee7ly1fv51ofe7d2j20m7054jru.jpg" referrerpolicy="no-referrer" alt="image" width="90%"></p>
+            <p>MX记录生效可能需要一段时间，请耐心等待。</p>
+          </div>
+          <div class="modal-footer">
+             <button class="btn btn-default" type="button" data-dismiss="modal">关闭</button>
+          </div>
+       </div>
+    </div>
+ </div>
+<script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.1/dist/clipboard.min.js" integrity="sha256-hIvIxeqhGZF+VVeM55k0mJvWpQ6gTkWk3Emc+NmowYA=" crossorigin="anonymous"></script>
+<script>
+(function(window, document, $, undefined){
+  $(function(){
+      new ClipboardJS('.btn-copy');
+  });
+
+  $('.my-alert').on('click', function (e) {
+        swal({
+            title : "确认执行本操作？",
+            text : "该操作无法撤回!",
+            type : "warning",
+            showCancelButton : true,
+            confirmButtonColor : "#DD6B55",
+            confirmButtonText : "确认",
+            closeOnConfirm : false,
+            dangerMode: true
+        }, function (cf) {
+            if (cf) {
+              $("#flush-mails").submit()
+            }
+        });
+        return false
+  })
+})(window, document, window.jQuery);
+</script>
+{% endblock %}
+
+{% block addstyle %}
+<style>
+.list-group-item:hover {
+  background-color: #fafafa;
+}
+.text-code {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  text-decoration: none;
+}
+</style>
+{% endblock %}

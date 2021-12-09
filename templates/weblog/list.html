@@ -1,0 +1,48 @@
+{% extends 'framework.html' %}
+
+{% block subject %}Web日志{% endblock %}
+
+{% block content %}
+<div class="panel panel-default">
+ <div class="panel-heading">Web日志</div>
+ <div class="panel-body">
+       <table class="table table-striped" >
+          <thead>
+             <tr>
+                <th>时间</th>
+                <th>方法</th>
+                <th>Host</th>
+                <th style="" class="hidden-xs hidden-sm table-path">Path</th>
+                <th>IP地址</th>
+                <th>管理</th>
+             </tr>
+          </thead>
+          <tbody>
+            {% for object in object_list %}
+             <tr>
+                <td>{{ object.created_time | date:"Y-m-d H:i:s" }}</td>
+                <td>{{ object.method }}</td>
+                <td>{{ object.hostname }}</td>
+                <td class="table-path hidden-xs hidden-sm">{{ object.path }}</td>
+                <td><span class="label label-info">{{ object.ip_addr }}</span></td>
+                <td>
+                    <a class="btn-xs btn btn-primary btn-outline"
+                       href="{% url 'log:weblog-detail' pk=object.pk %}">查看</a>
+                    <a class="btn-xs btn btn-danger btn-outline"
+                       href="javascript:post_submit('{% url 'log:weblog-delete' pk=object.pk %}')">刪除</a>
+                </td>
+             </tr>
+            {% endfor %}
+          </tbody>
+       </table>
+ </div>
+ {% if is_paginated %}
+ <div class="panel-footer">
+   <div class="pull-right">
+    {% include 'pure_pagination/pagination-bootstrap.html' %}
+   </div>
+   <div class="clearfix"></div>
+</div>
+ {% endif %}
+</div>
+{% endblock %}

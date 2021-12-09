@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load bootstrap3 %}
+
+{% block body %}
+<div class="wrapper">
+      <div class="block-center mt-xl wd-xl">
+         <!-- START panel-->
+         <div class="panel panel-dark panel-flat">
+            <div class="panel-body">
+               <p class="text-center pv">请填写表单注册用户</p>
+               <form role="form" data-parsley-validate="" novalidate="" class="mb-lg" method="post">
+                   {% bootstrap_form form field_class="text-muted" form_group_class="form-group has-feedback" show_help=False addon_after='<span class="fa fa-envelope form-control-feedback text-muted"></span>' %}
+                  <button type="submit" class="btn btn-block btn-primary mt-lg">注册</button>
+               {% csrf_token %}
+               </form>
+            </div>
+         </div>
+      </div>
+   </div>
+{% endblock %}

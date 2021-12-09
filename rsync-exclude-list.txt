@@ -1,0 +1,15 @@
+db.sqlite3
+env/
+conf/settings_dev.py
+.idea
+.git
+__pycache__/
+profile
+error.log
+media
+venv/
+.env
+javascript/node_modules/
+.DS_Store
+tests/
+javascript/.cache/

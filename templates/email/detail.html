@@ -1,0 +1,75 @@
+{% extends 'framework.html' %}
+{% load email_helper %}
+{% load template_helper %}
+
+{% block subject %}{{ email.subject }}{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-md-12 col-lg-8">
+    <div class="panel b table-responsive">
+      <div class="panel-body email-detail">
+        <h2>{{ email.subject }}</h2>
+        <hr>
+        <p>发件人：<span class="label label-info">{{ email.from_name | display_email }}</span></p>
+        <p>收件人：
+          {% for user in email.to_list %}
+            <span class="label label-info">{{ user | display_email }}</span>
+          {% endfor %}
+        </p>
+        {% if email.cc_list %}
+        <p>抄送：
+          {% for user in email.cc_list %}
+            <span class="label label-info">{{ user | display_email }}</span>
+          {% endfor %}
+        </p>
+        {% endif %}
+
+        <hr>
+
+        <iframe src="data:text/html;charset=utf-8;base64,{{ email.content | base64encode }}" frameborder="0" sandbox="allow-popups" width="100%"></iframe>
+      </div>
+    </div>
+
+  </div>
+  <div class="col-md-12 col-lg-4">
+      <div class="panel b">
+        <div class="panel-body">
+          <div class="clearfix">
+             <div class="pull-left">
+                <a href="{{ object.get_origin_file }}" class="btn btn-default btn-oval" target="_blank">
+                   <em class="fa fa-download fa-fw text-muted"></em>
+                   <span>原始邮件</span>
+                </a>
+                <button type="button" class="btn btn-default btn-oval"
+                        onclick="return post_submit('{% url 'email:delete' pk=object.pk %}')">
+                   <em class="fa fa-trash-o fa-fw text-muted"></em>
+                   <span>删除</span>
+                </button>
+             </div>
+             <div class="pull-right">
+                <a href="{{ request.session.back_url }}" class="btn btn-default btn-oval">返回</a>
+             </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block addstyle %}
+<style rel="stylesheet">
+.email-detail iframe {
+  height: 600px;
+}
+</style>
+{% endblock %}
+
+{% block addscript %}
+<script type="application/javascript">
+function resizeIframe(obj){
+     obj.style.height = 0;
+     obj.style.height = obj.contentWindow.document.body.scrollHeight + 'px';
+}
+</script>
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'framework.html' %}
+
+{% block subject %}我的文件{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-12">
+      <div class="pr">
+        <div class="mb-boxes collapse">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <ul class="nav nav-pills nav-stacked">
+                <li class="p">
+                  <small class="text-muted">文件类型</small>
+                </li>
+                <li class="{% if request.GET.category == 'text' or not request.GET.category %}active{% endif %}">
+                  <a href="{% url 'log:note-list' %}?category=text">
+                    <span class="label label-green pull-right">{{ statistics.text | default:'0' }}</span>
+                    <span>纯文本</span>
+                  </a>
+                </li>
+                <li class="{% ifequal request.GET.category 'file' %}active{% endifequal %}">
+                  <a href="{% url 'log:note-list' %}?category=file">
+                    <span class="label label-green pull-right">{{ statistics.file | default:'0' }}</span>
+                    <span>文件</span>
+                  </a>
+                </li>
+                <li class="{% ifequal request.GET.category 'article' %}active{% endifequal %}">
+                  <a href="{% url 'log:note-list' %}?category=article">
+                    <span class="label label-green pull-right">{{ statistics.article |default:'0' }}</span>
+                    <span>文章</span>
+                  </a>
+                </li>
+                <li class="{% ifequal request.GET.category 'code' %}active{% endifequal %}">
+                  <a href="{% url 'log:note-list' %}?category=code">
+                    <span class="label label-green pull-right">{{ statistics.code | default:'0' }}</span>
+                    <span>代码</span>
+                  </a>
+                </li>
+                <li class="p">
+                  <small class="text-muted">增加文件</small>
+                </li>
+                <li>
+                  <a href="{% url 'log:note-create' action='text' %}">
+                    <em class="fa fa-fw fa-lg fa-file-text-o"></em>
+                    <span>增加纯文本</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'log:note-create' action='file' %}">
+                    <em class="fa fa-fw fa-lg fa-upload"></em>
+                    <span>上传文件</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'log:note-create' action='article' %}">
+                    <em class="fa fa-fw fa-lg fa-book"></em>
+                    <span>渲染文章</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="{% url 'log:note-create' action='code' %}">
+                    <em class="fa fa-fw fa-lg fa-code"></em>
+                    <span>增加代码</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-4 col-lg-5 col-md-8 col-sm-12">
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <table class="table table-hover mb-mails">
+            <tbody>
+            {% for object in object_list %}
+              <tr class="pointer" data-link="{{ object.get_absolute_url }}" data-preview-link="{% url 'log:note-preview' pk=object.pk %}">
+                <td class="b0">
+                  <p class="h4 mt0 text-primary">
+                    <span class="align-middle">
+                      {% if object.title %}
+                        {{ object.title }}
+                      {% else %}
+                        {{ object.filename }}
+                      {% endif %}
+                    </span>
+                  </p>
+                  <span class="label bg-gray-lighter ph-lg mr text-sm visible-lg-inline">
+                    <span class="text-muted">{{ object.content_type }}</span>
+                   </span>
+                  <span class="label bg-gray-lighter ph-lg mr text-sm visible-lg-inline">
+                    <span class="text-muted">{{ object.created_time | timesince }}</span>
+                   </span>
+                  <div class="pull-right">
+                    <a href="{{ object.get_absolute_url }}"
+                       class="btn btn-xs btn-success" target="_blank">直接打开</a>
+                    <a href="{% url 'log:note-update' pk=object.pk %}" class="btn btn-primary btn-xs">编辑</a>
+                    <a href="javascript:post_submit('{% url 'log:note-delete' pk=object.pk %}')"
+                       class="btn btn-xs btn-danger">删除</a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% if is_paginated %}
+          <div class="panel-footer">
+            {% include 'pure_pagination/pagination-bootstrap.html' %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="col-xl-6 col-lg-4 col-md-12 col-sm-12 hidden" id="preview-block">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <p>
+              <a href="" id="preview-sl" class="btn btn-default">生成短连接</a>
+            </p>
+          </div>
+          <div class="panel-body p0">
+            <pre class="b0 m0" style="padding: 15px"><code id="preview">预览的文件内容...</code></pre>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block addscript %}
+<script>
+    jQuery(function ($) {
+        var sl_base = '{% url 'log:shortdomain-create' %}'
+        $('tr.pointer').on('click', function (e) {
+            if(e.target.tagName !== 'A') {
+                var preview_link = $(this).data('preview-link'), link = $(this).data('link')
+
+                $("#preview-block").removeClass('hidden')
+                $("#preview-sl").attr('href', `${sl_base}?target=${encodeURIComponent(link)}`)
+
+                $.get(preview_link, {}).done(function (data) {
+                    if(!data) {
+                        data = 'Binary data...'
+                    }
+                    $('#preview').text(data)
+                })
+            }
+        })
+    })
+</script>
+{% endblock %}

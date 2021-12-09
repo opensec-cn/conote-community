@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="wrapper">
+      <!-- top navbar-->
+      <header class="topnavbar-wrapper">
+         <!-- START Top Navbar-->
+         <nav role="navigation" class="navbar topnavbar">
+            <!-- START navbar header-->
+            <div class="navbar-header">
+               <a href="{% url 'log:index' %}" class="navbar-brand">
+                  <div class="brand-logo">
+
+                  </div>
+               </a>
+            </div>
+            <!-- END navbar header-->
+            <!-- START Nav wrapper-->
+            <div class="nav-wrapper">
+               <!-- START Left navbar-->
+               <ul class="nav navbar-nav">
+                  <li>
+                     <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
+                     <a href="#" data-toggle-state="aside-collapsed" class="hidden-xs">
+                        <em class="fa fa-navicon"></em>
+                     </a>
+                     <!-- Button to show/hide the sidebar on mobile. Visible on mobile only.-->
+                     <a href="#" data-toggle-state="aside-toggled" data-no-persist="true" class="visible-xs sidebar-toggle">
+                        <em class="fa fa-navicon"></em>
+                     </a>
+                  </li>
+               </ul>
+               <!-- END Left navbar-->
+            </div>
+            <!-- END Nav wrapper-->
+         </nav>
+         <!-- END Top Navbar-->
+      </header>
+      <!-- sidebar-->
+      <aside class="aside">
+         <!-- START Sidebar (left)-->
+         <div class="aside-inner">
+
+            {% if request.resolver_match.view_name in 'log:note-list,log:weblog-list,log:dnslog-list,sandbox:sandbox-list' %}
+         
+            <div id="search-box">
+               <input id="main-search-input" class="form-control" type="text" placeholder="Search" name="query">
+            </div>
+
+            {% endif %}
+
+            <nav data-sidebar-anyclick-close="" class="sidebar">
+               <!-- START sidebar nav-->
+               <ul class="nav">
+                  <li>
+                     <a href="{% url 'log:index' %}" title="Single View">
+                        <em class="fa fa-dashboard"></em>
+                        <span data-localize="sidebar.nav.SINGLEVIEW">主页</span>
+                     </a>
+                  </li>
+                  <li class=" ">
+                     <a href="#menu-log" title="Menu" data-toggle="collapse">
+                        <em class="icon-list"></em>
+                        <span data-localize="sidebar.nav.menu.MENU">日志</span>
+                     </a>
+                     <ul id="menu-log" class="nav sidebar-subnav collapse in">
+                        <li class="sidebar-subnav-header">log</li>
+                        <li class=" ">
+                           <a href="{% url 'log:weblog-list' %}" title="Sub Menu">
+                              <span data-localize="sidebar.nav.menu.SUBMENU">Web日志</span>
+                           </a>
+                        </li>
+                        <li class=" ">
+                           <a href="{% url 'log:dnslog-list' %}" title="Sub Menu">
+                              <span data-localize="sidebar.nav.menu.SUBMENU">DNS日志</span>
+                           </a>
+                        </li>
+                     </ul>
+                  </li>
+                  <li>
+                     <a href="{% url 'log:note-list' %}" title="Single View">
+                        <em class="icon-pencil"></em>
+                        <span data-localize="sidebar.nav.SINGLEVIEW">文件服务</span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="{% url 'log:shortdomain-list' %}" title="Single View">
+                        <em class="icon-link"></em>
+                        <span data-localize="sidebar.nav.SINGLEVIEW">短域名</span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="{% url 'log:dns-record' %}" title="Single View">
+                        <em class="icon-envelope"></em>
+                        <span data-localize="sidebar.nav.SINGLEVIEW">DNS服务器</span>
+                     </a>
+                  </li>
+                  <li>
+                      <a href="#menu-xss" title="Menu" data-toggle="collapse">
+                        <em class="icon-ghost"></em>
+                        <span data-localize="sidebar.nav.menu.MENU">XSS收信</span>
+                     </a>
+                     <ul id="menu-xss" class="nav sidebar-subnav collapse in">
+                        <li class="sidebar-subnav-header">XSS收信</li>
+                        <li class=" ">
+                           <a href="{% url 'xss:project-create' %}" title="Project List">
+                              <span data-localize="sidebar.nav.menu.SUBMENU">项目列表</span>
+                           </a>
+                        </li>
+                        <li class=" ">
+                           <a href="{% url 'xss:victim-list' %}" title="Victim List">
+                              <span data-localize="sidebar.nav.menu.SUBMENU">结果列表</span>
+                           </a>
+                        </li>
+                     </ul>
+                  </li>
+                  <li>
+                     <a href="{% url 'sandbox:sandbox-list' %}" title="Single View">
+                        <em class="icon-layers"></em>
+                        <span data-localize="sidebar.nav.SINGLEVIEW">我的沙盒</span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="{% url 'disposable_email:list' %}" title="Single View">
+                        <em class="fa fa-inbox"></em>
+                        <span data-localize="sidebar.nav.SINGLEVIEW">域名邮箱</span>
+                     </a>
+                  </li>
+                  <li>
+                     <a href="{% url 'rat:rat-list' %}" title="Single View">
+                        <em class="icon-key"></em>
+                        <span data-localize="sidebar.nav.SINGLEVIEW">远程终端</span>
+                     </a>
+                  </li>
+               </ul>
+               <!-- END sidebar nav-->
+            </nav>
+         </div>
+         <!-- END Sidebar (left)-->
+      </aside>
+      <!-- offsidebar-->
+      <section>
+         <!-- Page content-->
+         {% block main %}{% endblock %}
+      </section>
+      <!-- Page footer-->
+      <footer>
+         <span>&copy; {% now 'Y' %} - Conote</span>
+      </footer>
+   </div>
+{% endblock %}

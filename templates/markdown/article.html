@@ -1,0 +1,45 @@
+{% load static %}
+{% load i18n %}
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="X-UA-Compatible" content="IE=edge">
+<title>{{ object.title }}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{% static 'article/gandalfr.css' %}">
+<link rel="stylesheet" href="https://highlightjs.org/static/demo/styles/agate.css">
+</head>
+<body>
+<div class="wrap">
+	<main class="container">
+	<div class="post">
+		<article class="post-block">
+		<h1 class="post-title">{{ object.title }}</h1>
+		<div class="post-info">
+          {% language 'en' %}
+          <time datetime="{{ object.created_time }}" itemprop="datePublished">
+            {{ object.created_time | date:"Y M d " }}
+          </time>
+          {% endlanguage %}
+		</div>
+		<div class="post-content" id="article"></div>
+		</article>
+	</div>
+	</main>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdn.staticfile.org/highlight.js/9.12.0/highlight.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked@0.5.1/lib/marked.min.js"></script>
+<script>
+    $(document).ready(function() {
+        marked.setOptions({
+          highlight: function (code) {
+            return hljs.highlightAuto(code).value;
+          }
+        });
+        var content = marked('{{ object.content | escapejs }}');
+        $("#article").html(content);
+    });
+</script>
+</body>
+</html>

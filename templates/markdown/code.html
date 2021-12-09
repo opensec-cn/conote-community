@@ -1,0 +1,54 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ object.title }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flexboxgrid@6.3.1/dist/flexboxgrid.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.40.2/lib/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.40.2/theme/neat.min.css">
+    <style type="text/css">
+      .CodeMirror {
+        border: 1px solid #eee;
+        height: auto;
+      }
+    </style>
+
+</head>
+<body>
+
+<div class="row">
+    <div class="col-xs-3"></div>
+    <div class="col-xs-6">
+        <h2>{{ object.title }}</h2>
+        <div class="box">
+            <textarea id="code" cols="40" rows="30">{{ object.content }}</textarea>
+        </div>
+    </div>
+    <div class="col-xs-3"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.40.2/lib/codemirror.min.js"></script>
+{% if object.language == 'php' or object.language == 'htmlembedded' %}
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.40.2/mode/xml/xml.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.40.2/mode/javascript/javascript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.40.2/mode/css/css.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.40.2/mode/clike/clike.min.js"></script>
+{% endif %}
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.40.2/mode/{{ object.language }}/{{ object.language }}.min.js"></script>
+<script>
+window.onload = function () {
+    var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("code"), {
+        mode: "{{ object.language }}",
+        theme: "neat",
+        lineNumbers: true,
+        lineWrapping: true,
+        readOnly: true,
+        height: 'dynamic'
+    });
+}
+</script>
+</body>
+</html>
