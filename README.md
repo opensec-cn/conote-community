@@ -1,6 +1,6 @@
-# CoNote 平台搭建
+# CoNote 综合安全测试平台（社区版）
 
-CoNote是一个内部使用的工作台，它会让我们的渗透测试过程变得非常方便。
+CoNote是一个内部使用的工作台，它会让我们的安全测试过程变得非常方便，于2021年12月推出社区版。
 
 使用说明：<https://phithon.gitbooks.io/conote/content/>
 
