@@ -1,6 +1,6 @@
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 from rest_framework import exceptions
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
 
