@@ -4,7 +4,7 @@ channels-redis
 chardet
 defusedxml
 dj-database-url
-django
+django<4.0
 django-bootstrap3
 django-filter
 django-pure-pagination
