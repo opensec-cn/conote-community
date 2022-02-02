@@ -2,7 +2,7 @@ import re
 import base64
 
 from django import template
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.template.defaultfilters import stringfilter
 from django.conf import settings
 from django.utils.html import conditional_escape, strip_tags
@@ -17,7 +17,7 @@ VIEWER_PATTERN = re.compile(b'[^\x20-\x7E\x0A]')
 @register.filter
 def remove_unobservable(data):
     data = VIEWER_PATTERN.sub(b'.', data)
-    return force_text(data)
+    return force_str(data)
 
 
 @register.filter(is_safe=True)

@@ -1,5 +1,4 @@
 from django import template
-from django.utils.encoding import force_text
 from conote.ipdata.parser import IPData
 
 

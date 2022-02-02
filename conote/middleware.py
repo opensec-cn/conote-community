@@ -9,7 +9,7 @@ from django.conf import settings
 from django.http import HttpResponse, Http404, FileResponse, HttpResponsePermanentRedirect
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, render
-from django.utils.encoding import force_bytes, force_text
+from django.utils.encoding import force_bytes, force_str
 from django.utils import timezone
 
 from conote.utils import get_remote_addr, get_domain_key, build_url, from62_to10
@@ -157,7 +157,7 @@ class SandboxModdleware(LogRequestMixin):
         return response
 
     def parse_header(self, data):
-        data = force_text(data)
+        data = force_str(data)
         headers = CaseInsensitiveDict()
         for line in data.split('\n'):
             try:
